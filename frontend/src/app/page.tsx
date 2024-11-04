@@ -8,38 +8,17 @@ const Page = () => {
     const [cartItemCount, setCartItemCount] = useState(0);
     const [totalAmount, setTotalAmount] = useState(0);
 
-    useEffect(() => {
-        const fetchPerfumes = async () => {
-            const data = await getAllPerfumes();
-            console.log("the data from the frontend", data);
-            setPerfumes(data.perfumes || []);
-        };
-        fetchPerfumes();
-    }, []);
-
-    // const handleItemAdd = (perfume: { _id: any; price: number; }) => {
-    //     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    //     cartItems.push({ id: perfume._id, price: perfume.price });
-    //     console.log("Item added to cart", cartItems);
-    //     localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    //     setCartItemCount(cartItems.length); 
-    //     setTotalAmount(calculateTotalAmount()); 
-    // };
-
-    const [selectedItems, setSelectedItems] = useState<{ id: any; price: number }[]>([]);
     const [userSelectedItems, setUserSelectedItems] = useState<{ id: any; price: number }[]>([]);
 
-const handleItemAdd = (perfume: { _id: any; price: number; }) => {
+    const handleItemAdd = (perfume: { _id: any; price: number; }) => {
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
     cartItems.push({ id: perfume._id, price: perfume.price });
     userSelectedItems.push({ id: perfume._id, price: perfume.price });
     console.log("Item added to cart", cartItems);
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
     setCartItemCount(userSelectedItems.length); 
-    // setTotalAmount(calculateTotalAmount()); 
 
-    // Update selected items array
-    setSelectedItems([...selectedItems, { id: perfume._id, price: perfume.price }]);
+    setUserSelectedItems([...userSelectedItems, { id: perfume._id, price: perfume.price }]);
 };
     
     const calculateTotalAmount = () => {
@@ -60,13 +39,23 @@ const handleItemAdd = (perfume: { _id: any; price: number; }) => {
     }, []);
 
     useEffect(() => {
-        // setTotalAmount(calculateTotalAmount());
+        const fetchPerfumes = async () => {
+            const data = await getAllPerfumes();
+            console.log("the data from the frontend", data);
+            setPerfumes(data.perfumes || []);
+        };
+        fetchPerfumes();
+    }, []);
+
+
+    useEffect(() => {
+        setTotalAmount(calculateTotalAmount());
     }, [perfumes]);
 
     useEffect(() => {
         const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-        setCartItemCount(cartItems.length); 
-        // setTotalAmount(calculateTotalAmount()); 
+        setCartItemCount(userSelectedItems.length); 
+        setTotalAmount(calculateTotalAmount()); 
     }, []);
 
     return (
@@ -75,7 +64,7 @@ const handleItemAdd = (perfume: { _id: any; price: number; }) => {
                 <div className={styles.box}>
                     <div className={styles.col4}></div>
                     <div className={`${styles.col4} ${styles.signText}`}>
-                        Sign up and get 20% off on your first order. &nbsp;
+                        Sign up and get 20% off on your first order. &nbsp;&nbsp;&nbsp;&nbsp;
                         <a href="" className={styles.a}>Sign Up Now</a>
                     </div>
                 </div>

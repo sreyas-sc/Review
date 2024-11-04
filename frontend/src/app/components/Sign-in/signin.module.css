@@ -1,0 +1,102 @@
+.backgroundImage {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height of the viewport */
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+      "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    background: url(../img/background.png) no-repeat center center fixed;
+    background-size: cover;
+}
+
+.card {
+    width: 400px;
+    overflow: hidden;
+    height: auto;
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+    border-radius: 10px;
+    padding: 40px 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+    position: relative; /* Position relative for absolute positioning of the close icon */
+}
+
+.closeIcon {
+    position: absolute;
+    top: 10px;
+    right: 10px; /* Position the close icon in the top right corner */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+.heading {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 20px; /* Space below heading */
+    color: #333333;
+    text-align: center;
+}
+
+.inputField {
+    height: 50px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0 12px; /* Padding for input */
+    margin-bottom: 20px; /* Space between input fields */
+    font-size: 16px;
+}
+
+.passwordField {
+    position: relative; /* Position relative for absolute positioning of the eye icon */
+}
+
+.eyeIcon {
+    position: absolute;
+    right: 12px; /* Position the eye icon inside the password field */
+    top: 14px; /* Center vertically in the input field */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+.signUpButton {
+    height: 50px;
+    width: 100%;
+    background-color: #111111;
+    color: white;
+    border: none;
+    font-size: 18px;
+    border-radius: 25px;
+    cursor: pointer; /* Change cursor on hover */
+    margin-top: 20px; /* Space above button */
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.signUpButton:hover {
+    background-color: #333333; /* Darker background on hover */
+}
+
+.signInText {
+    text-align: center; /* Center the sign-in text */
+    margin-top: 20px; /* Space above sign-in text */
+    color: #666666;
+}
+
+.signInLink {
+    color: #111111; /* Link color */
+    text-decoration: none; /* Remove underline */
+    font-weight: bold;
+}
+
+.signInLink:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+.inputFeildWrapper {
+    margin-top: 30px;
+}
+
+.inName {
+    color: #666666;
+    font-size: 14px;
+}

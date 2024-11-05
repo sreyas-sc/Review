@@ -100,9 +100,11 @@ export const addToCartController = (req, res) => {
     // Apply cart-wide discounts
     if (uniquePerfumes.size >= 6) {
         totalCartPrice *= 0.85; 
+        console.log('15% off applied for purchasing all 6 different perfumes');
         discountMessage.push('15% off applied for purchasing all 6 different perfumes');
     } else if (uniquePerfumes.size >= 5) {
         totalCartPrice *= 0.90; 
+        console.log('10% off applied for purchasing 5 different perfumes');
         discountMessage.push('10% off applied for purchasing 5 different perfumes');
     }
 
@@ -114,6 +116,7 @@ export const addToCartController = (req, res) => {
 
     // Cart-Wide Discount for total exceeding 500
     if (totalCartPrice > 500) {
+        console.log('Total cart price exceeds 500, offer applied');
         totalCartPrice *= 0.95; 
         discountMessage.push('Additional 5% off applied for cart total exceeding 500');
     }

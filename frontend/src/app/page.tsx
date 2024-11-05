@@ -5,6 +5,7 @@ import { getAllPerfumes, addToCart } from './api-helpers/api-helpers';
 
 interface Perfume {
     _id: string;
+    code: string;
     name: string;
     price: number;
     image: string;
@@ -14,6 +15,7 @@ interface Perfume {
 
 interface CartItem {
     id: string;
+    code: string;
     name: string;
     price: number;
     quantity: number;
@@ -61,6 +63,7 @@ const Page = () => {
         } else {
             updatedCartItems = [...existingCartItems, {
                 id: perfume._id,
+                code: perfume.code,
                 name: perfume.name,
                 price: perfume.price,
                 quantity: 1
@@ -73,7 +76,7 @@ const Page = () => {
     
         const cartItem = updatedCartItems.find(item => item.id === perfume._id);
         if (cartItem) {
-            await addToCart([cartItems]);
+            await addToCart(updatedCartItems);
         }
     };
 

@@ -18,30 +18,29 @@ export const getAllPerfumes = async () => {
   };
 
   // add to cart logic
-export const addToCart = async (cartItems = []) => {
-
-
+export const addToCart = async (cartItems = [], perfume) => {
   console.log("Cart: ", cartItems);
-  console.log("Perfume: ", perfume);
 
-  const existingItem = cartItems.find(item => item._id === perfume._id);
+  const existingItem = cartItems.find(item => item._id);
   let updatedCart;
   if (existingItem) {
-      updatedCart = cartItems.map(item =>
-          item._id === perfume._id ? { ...item, quantity: (item.quantity || 1) + 1 } : item
+      updatedCart = cartItems.map(item => 
+          ({ ...item, quantity: (item.quantity || 1) + 1 })
       );
   } else {
       updatedCart = [...cartItems, { ...perfume, quantity: 1 }];
   }
 
   try {
+    console.log("Updated Cart: ", updatedCart);
     const res = await axios.post(`http://localhost:5000/cart`, { items: updatedCart });
     if (res.status !== 200) {
       console.log("Failed to update cart");
       return cartItems;
+      
     }
-    // Ensure the updated cart is returned
-    return res.data.items;
+    console.log("Response from controller: ", res.data);
+    return res.data;
   } catch (err) {
     console.log("Error: ", err.message);
     return cartItems;

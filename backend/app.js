@@ -17,7 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 // Middleware setup
 app.use("/user", userRouter);
 app.use("/perfume", perfumeRouter);
-app.use("/cart", cartRouter);
+app.post("/cart", cartRouter);
+
 
 
 mongoose.connect(

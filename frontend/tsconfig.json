@@ -25,6 +25,6 @@
     "**/*.ts",
     "**/*.tsx",
     "src/app/page.tsx"
-, "src/app/layout.tsx", "src/app/components/Sign-up/page.jx"  ],
+, "src/app/layout.tsx", "src/app/components/Sign-up/page.jx", "src/app/api-helpers/api-helpers.js"  ],
   "exclude": ["node_modules"]
 }

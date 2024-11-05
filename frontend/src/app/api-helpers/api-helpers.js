@@ -18,7 +18,9 @@ export const getAllPerfumes = async () => {
   };
 
   // add to cart logic
-export const addToCart = async (cartItems = [], perfume) => {
+export const addToCart = async (cartItems = []) => {
+
+
   console.log("Cart: ", cartItems);
   console.log("Perfume: ", perfume);
 

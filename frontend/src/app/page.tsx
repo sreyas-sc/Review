@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import styles from './page.module.css';
-import { getAllPerfumes } from './api-helpers/api-helpers';
+import { getAllPerfumes, addToCart } from './api-helpers/api-helpers';
 
 interface Perfume {
     _id: string;
@@ -20,8 +20,8 @@ interface CartItem {
 }
 
 const Page = () => {
-    const [perfumes, setPerfumes] = useState([]);
-    const [cartItems, setCartItems] = useState([]);
+    const [perfumes, setPerfumes] = useState<Perfume[]>([]);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [totalAmount, setTotalAmount] = useState(0);
 
     const getStoredCartItems = (): CartItem[] => {
@@ -37,7 +37,6 @@ const Page = () => {
         }
     };
 
-    // Safe localStorage setter with error handling
     const setStoredCartItems = (items: CartItem[]) => {
         if (typeof window === 'undefined') return;
         
@@ -48,7 +47,7 @@ const Page = () => {
         }
     };
 
-    const handleItemAdd = (perfume: Perfume) => {
+    const handleItemAdd = async (perfume: Perfume) => {
         const existingCartItems = getStoredCartItems();
         const existingItem = existingCartItems.find(item => item.id === perfume._id);
         
@@ -71,6 +70,11 @@ const Page = () => {
         setStoredCartItems(updatedCartItems);
         setCartItems(updatedCartItems);
         updateTotals(updatedCartItems);
+    
+        const cartItem = updatedCartItems.find(item => item.id === perfume._id);
+        if (cartItem) {
+            await addToCart([cartItems]);
+        }
     };
 
     const handleItemRemove = (itemId: string) => {
@@ -108,8 +112,6 @@ const Page = () => {
             setPerfumes(data.perfumes || []);
         };
         fetchPerfumes();
-
-
     }, []);
 
     return (
@@ -117,10 +119,7 @@ const Page = () => {
             <div className={styles.headerBox}>
                 <div className={styles.box}>
                     <div className={styles.col4}></div>
-                    <div className={`${styles.col4} ${styles.signText}`}>
-                        Sign up and get 20% off on your first order. &nbsp;&nbsp;&nbsp;&nbsp;
-                        <a href="" className={styles.a}>Sign Up Now</a>
-                    </div>
+                    <div className={`${styles.col4} ${styles.signText}`}></div>
                 </div>
                 <div className={styles.col4}>
                     <img src="/assets/img/cross.svg" alt="" />

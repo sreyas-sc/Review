@@ -79,7 +79,7 @@ const Page = () => {
 
     return (
         <>
-            <div>
+            <div className={styles.headerBox}>
                 <div className={styles.box}>
                     <div className={styles.col4}></div>
                     <div className={`${styles.col4} ${styles.signText}`}>
@@ -104,7 +104,7 @@ const Page = () => {
 
                 <div className={styles.searchBar}>
                     <input type="text" placeholder="Search for products..." />
-                    <span className={styles.searchIcon}><img src="/home/page/assets/icons/search-icon.png" alt="" /></span>
+                    <span className={styles.searchIcon}><img src="/assets/icons/search-icon.png" alt="" /></span>
                 </div>
 
                 <div className={styles.icons}>

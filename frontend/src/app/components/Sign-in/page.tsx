@@ -34,7 +34,7 @@ const SignIn = () => {
     return (
         <div className={styles.backgroundImage}>
             <div className={styles.card}>
-                <img src="../img/cross-ash.svg" alt="Close" className={styles.closeIcon} /> {/* Cross icon */}
+                <img src="/assets/img/cross-ash.svg" alt="Close" className={styles.closeIcon} /> {/* Cross icon */}
                 <h2 className={styles.heading}>Sign In</h2>
                 <div className={styles.inputFieldWrapper}>
                     <p className={styles.inName}>Email or Phone Number</p>
@@ -54,7 +54,7 @@ const SignIn = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        <img src="../img/eye.svg" alt="Show Password" className={styles.eyeIcon} /> {/* Eye icon */}
+                        <img src="/assets/img/eye.svg" alt="Show Password" className={styles.eyeIcon} /> {/* Eye icon */}
                     </div>
                     <button className={styles.signUpButton} onClick={handleLogin}>Sign In</button>
                     <p className={styles.signInText}>Already have an account? <a href="/components/Sign-up" className={styles.signInLink}>Sign Up</a></p>

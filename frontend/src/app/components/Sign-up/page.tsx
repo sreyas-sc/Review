@@ -4,7 +4,7 @@ import axios from 'axios';
 import styles from './login.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
-import eye from '../img/eye.svg';
+// import eye from '../img/eye.svg';
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -32,7 +32,7 @@ const SignUp = () => {
       <div style={{ fontFamily: 'manrope' }}>
         <div className={styles.backgroundImage}>
           <div className={styles.card}>
-            <img src="../img/cross-hash.svg" alt="Close" className={styles.closeIcon} /> {/* Cross icon */}
+            <img src="/assets/img/cross-ash.svg" alt="Close" className={styles.closeIcon} /> {/* Cross icon */}
             <h2 className={styles.heading}>Sign Up</h2>
             <div className={styles.inputFieldWrapper}>
               <p className={styles.inName}>Name</p>
@@ -61,7 +61,7 @@ const SignUp = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <Image width={2} height={2} src={eye} alt="Show Password" className={styles.eyeIcon} /> {/* Eye icon */}
+                <Image width={2} height={2} src={"/assets/img/eye.svg"} alt="Show Password" className={styles.eyeIcon} /> {/* Eye icon */}
               </div>
 
               <button className={styles.signUpButton} onClick={handleSignUp}>Sign Up</button>

@@ -3,19 +3,22 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    /* width: 100vh; */
     height: 100vh; /* Full height of the viewport */
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .backgroundImage {
-    position: relative;
+    margin: 0;
     display: flex;
-    align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
-    background: url(../img/background.png);
-    background-repeat: round;
+    align-items: center;
+    /* width: 100vh; */
+    height: 100vh; /* Full height of the viewport */
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+      "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    background: url(/assets/img/background.png) no-repeat center center fixed;
+    background-size: cover;
 }
 
 .card {

@@ -5,57 +5,76 @@ import { getAllPerfumes } from './api-helpers/api-helpers';
 
 const Page = () => {
     const [perfumes, setPerfumes] = useState([]);
-    const [cartItemCount, setCartItemCount] = useState(0);
+    const [cartItems, setCartItems] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
 
-    const [userSelectedItems, setUserSelectedItems] = useState<{ id: any; price: number }[]>([]);
-
-    const handleItemAdd = (perfume: { _id: any; price: number; }) => {
-    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    cartItems.push({ id: perfume._id, price: perfume.price });
-    userSelectedItems.push({ id: perfume._id, price: perfume.price });
-    console.log("Item added to cart", cartItems);
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    setCartItemCount(userSelectedItems.length); 
-
-    setUserSelectedItems([...userSelectedItems, { id: perfume._id, price: perfume.price }]);
-};
-    
-    const calculateTotalAmount = () => {
-        const userSelectedItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-        return userSelectedItems.reduce((total: number, item: { price: number; }) => total + (item.price || 0), 0);
+    const handleItemAdd = (perfume) => {
+        const existingCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+        const existingItem = existingCartItems.find(item => item.id === perfume._id);
+        
+        let updatedCartItems;
+        if (existingItem) {
+            // If item exists, increment quantity
+            updatedCartItems = existingCartItems.map(item =>
+                item.id === perfume._id
+                    ? { ...item, quantity: (item.quantity || 1) + 1 }
+                    : item
+            );
+        } else {
+            // If item doesn't exist, add it with quantity 1
+            updatedCartItems = [...existingCartItems, {
+                id: perfume._id,
+                name: perfume.name,
+                price: perfume.price,
+                quantity: 1
+            }];
+        }
+        
+        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+        setCartItems(updatedCartItems);
+        updateTotals(updatedCartItems);
     };
 
-    useEffect(() => {
-        const updateTotalAmount = () => {
-            setTotalAmount(calculateTotalAmount());
-        };
+    const handleItemRemove = (itemId) => {
+        const existingCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+        const updatedCartItems = existingCartItems.filter(item => item.id !== itemId);
+        
+        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+        setCartItems(updatedCartItems);
+        updateTotals(updatedCartItems);
+    };
 
-        window.addEventListener('storage', updateTotalAmount);
+    const handleQuantityChange = (itemId, change) => {
+        const existingCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+        const updatedCartItems = existingCartItems.map(item => {
+            if (item.id === itemId) {
+                const newQuantity = Math.max(1, (item.quantity || 1) + change);
+                return { ...item, quantity: newQuantity };
+            }
+            return item;
+        });
+        
+        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+        setCartItems(updatedCartItems);
+        updateTotals(updatedCartItems);
+    };
 
-        return () => {
-            window.removeEventListener('storage', updateTotalAmount);
-        };
-    }, []);
+    const updateTotals = (items) => {
+        const total = items.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+        setTotalAmount(total);
+    };
 
     useEffect(() => {
         const fetchPerfumes = async () => {
             const data = await getAllPerfumes();
-            console.log("the data from the frontend", data);
             setPerfumes(data.perfumes || []);
         };
         fetchPerfumes();
-    }, []);
 
-
-    useEffect(() => {
-        setTotalAmount(calculateTotalAmount());
-    }, [perfumes]);
-
-    useEffect(() => {
-        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-        setCartItemCount(userSelectedItems.length); 
-        setTotalAmount(calculateTotalAmount()); 
+        // Load cart items from localStorage
+        const storedCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+        setCartItems(storedCartItems);
+        updateTotals(storedCartItems);
     }, []);
 
     return (
@@ -69,7 +88,7 @@ const Page = () => {
                     </div>
                 </div>
                 <div className={styles.col4}>
-                    <img src="../img/cross.svg" alt="" />
+                    <img src="/assets/img/cross.svg" alt="" />
                 </div>
             </div>
 
@@ -97,7 +116,7 @@ const Page = () => {
                             
                         </div>
                         <div className={`${styles.icon} ${styles.profile}`}>
-                            <span><img src="../assets/icons/person.png" alt="" /></span>
+                            <span><img src="/assets/icons/person.png" alt="" /></span>
                         </div>
                     </div>
                 </div>
@@ -106,7 +125,7 @@ const Page = () => {
             <div className={styles.mainContentWrapper}>
                 <div className={styles.exploreBlock}>
                     <div className={styles.imageContainer}>
-                        <img src="../img/img-2.svg" alt="Explore Image" className={styles.fullWidthImage} />
+                        <img src="/assets/img/img-2.svg" alt="Explore Image" className={styles.fullWidthImage} />
                     </div>
                 </div>
 
@@ -116,8 +135,49 @@ const Page = () => {
 
                     <div className={styles.cartSummary}>
                         <h2>Cart Summary</h2>
-                        <p>Total Amount: ${totalAmount}</p>
-                        <span className={styles.badge}>{cartItemCount}</span>
+                        <div className={styles.cartItems}>
+                            {cartItems.map((item) => (
+                                <div key={item.id} className={styles.cartItem}>
+                                    <div className={styles.itemInfo}>
+                                        <span>{item.name} x {item.quantity}</span>
+                                        <span>${(item.price * (item.quantity || 1)).toFixed(2)}</span>
+                                    </div>
+                                    <div className={styles.itemControls}>
+                                        <button 
+                                            onClick={() => handleQuantityChange(item.id, -1)}
+                                            className={styles.quantityBtn}
+                                        >
+                                            -
+                                        </button>
+                                        <span>{item.quantity || 1}</span>
+                                        <button 
+                                            onClick={() => handleQuantityChange(item.id, 1)}
+                                            className={styles.quantityBtn}
+                                        >
+                                            +
+                                        </button>
+                                        <button 
+                                            onClick={() => handleItemRemove(item.id)}
+                                            className={styles.removeBtn}
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className={styles.cartTotal}>
+                            <p>Total Items: {cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)}</p>
+                            <p>Total Amount: ${totalAmount.toFixed(2)}</p>
+                        </div>
+                        {cartItems.length > 0 && (
+                            <button 
+                                className={styles.checkoutBtn}
+                                onClick={() => alert('Proceeding to checkout...')}
+                            >
+                                Proceed to Checkout
+                            </button>
+                        )}
                     </div>
                 </div>
                     <div className={styles.collectionRight}>
@@ -139,12 +199,9 @@ const Page = () => {
                                             <img src={perfume.image} alt="Product" className={styles.productImage} />
                                         </div>
                                         <div className={styles.heartWrapper}>
-                                            {/* <img src="../img/heart.svg" alt="Heart" className={styles.heartImage} /> */}
                                         </div>
                                         <div className={styles.badgeWrapper}>
-                                            {/* <img src="../img/badge.svg" alt="Badge" className={styles.badgeImage} /> */}
                                         </div>
-                                        {/* <a href="../cart/cart.html"> */}
                                         <button className={styles.buyButton} onClick={() => handleItemAdd(perfume)}>Add to Cart</button>
                                         {/* </a> */}
                                     </div>
@@ -153,7 +210,6 @@ const Page = () => {
                                         <p>{perfume.description}</p>
                                         <p>Brand: {perfume.brand}</p>
                                         <p>Price: ${perfume.price}</p>
-                                        <p>Quantity: {perfume.quantity}</p>
                                     </div>
                                 </div>
                             ))}
@@ -165,15 +221,15 @@ const Page = () => {
             <footer className={styles.footer}>
                 <div className={styles.footerContainer}>
                     <div className={styles.footerBrand}>
-                        <h2>Scentora</h2>
+                        <h2 className={styles.h2}>Scentora</h2>
                         <p>
                             We have perfumes that suits your <br />style and which you’re proud.
                         </p>
                         <div className={styles.socialIcons}>
-                            <a href="#"><img src="../assets/icons/twitter.png" alt="" /></a>
-                            <a href="#"><img src="../assets/icons/fb2.png" alt="" /></a>
-                            <a href="#"><img src="../assets/icons/insta.png" alt="" /></a>
-                            <a href="#"><img src="../assets/icons/git.png" alt="" /></a>
+                            <a href="#"><img src="/assets/icons/twitter.png" alt="" /></a>
+                            <a href="#"><img src="/assets/icons/fb2.png" alt="" /></a>
+                            <a href="#"><img src="/assets/icons/insta.png" alt="" /></a>
+                            <a href="#"><img src="/assets/icons/git.png" alt="" /></a>
                         </div>
                     </div>
 
@@ -211,11 +267,11 @@ const Page = () => {
                 <div className={styles.footerBottom}>
                     <p>Scentora © 2000-2023, All Rights Reserved</p>
                     <div className={styles.paymentIcons}>
-                        <img src="../assets/icons/visa.png" alt="Visa" />
-                        <img src="../assets/icons/master.png" alt="MasterCard" />
-                        <img src="../assets/icons/paypal.png" alt="PayPal" />
-                        <img src="../assets/icons/applepay.png" alt="Apple Pay" />
-                        <img src="../assets/icons/gpay.png" alt="Google Pay" />
+                        <img src="/assets/icons/visa.png" alt="Visa" />
+                        <img src="/assets/icons/master.png" alt="MasterCard" />
+                        <img src="/assets/icons/paypal.png" alt="PayPal" />
+                        <img src="/assets/icons/applepay.png" alt="Apple Pay" />
+                        <img src="/assets/icons/gpay.png" alt="Google Pay" />
                     </div>
                 </div>
             </footer>

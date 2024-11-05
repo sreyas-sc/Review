@@ -279,6 +279,63 @@
   height: 40px;
 }
 
+.cartItems {
+  margin: 15px 0;
+}
+
+.cartItem {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 10px;
+}
+
+.itemInfo {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.itemControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quantityBtn {
+  padding: 2px 8px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.removeBtn {
+  padding: 4px 8px;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.cartTotal {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 2px solid #eee;
+}
+
+.checkoutBtn {
+  width: 100%;
+  padding: 10px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
 .classCard {
   display: flex;
   overflow-y: auto;
@@ -440,7 +497,11 @@
   flex: 1;
 }
 
-.footerBrand h2 {
+.footerBrand.h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.h2{
   font-size: 24px;
   margin-bottom: 10px;
 }

@@ -214,41 +214,46 @@ const Page = () => {
                     <div className={styles.cartSummary}>
                         <h2>Cart Summary</h2>
                         <div className={styles.cartItems}>
-                            {cartItems.map((item) => (
-                                <div key={item.id} className={styles.cartItem}>
-                                    <div className={styles.itemInfo}>
-                                        <span>{item.name} x {item.quantity}</span>
-                                        <span>${(item.price * (item.quantity || 1)).toFixed(2)}</span>
-                                    </div>
-                                    <div className={styles.itemControls}>
-                                        <button 
-                                            onClick={() => handleQuantityChange(item.id, -1)}
-                                            className={styles.quantityBtn}
-                                        >
-                                            -
-                                        </button>
-                                        <span>{item.quantity || 1}</span>
-                                        <button 
-                                            onClick={() => handleQuantityChange(item.id, 1)}
-                                            className={styles.quantityBtn}
-                                        >
-                                            +
-                                        </button>
-                                        <button 
-                                            onClick={() => handleItemRemove(item.id)}
-                                            className={styles.removeBtn}
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+    {cartItems && cartItems.length > 0 ? (
+        cartItems.map((item) => (
+            <div key={item.id} className={styles.cartItem}>
+                <div className={styles.itemInfo}>
+                    <span>{item.name} x {item.quantity}</span>
+                    <span>${(item.price * (item.quantity || 1)).toFixed(2)}</span>
+                </div>
+                <div className={styles.itemControls}>
+                    <button 
+                        onClick={() => handleQuantityChange(item.id, -1)}
+                        className={styles.quantityBtn}
+                    >
+                        -
+                    </button>
+                    <span>{item.quantity || 1}</span>
+                    <button 
+                        onClick={() => handleQuantityChange(item.id, 1)}
+                        className={styles.quantityBtn}
+                    >
+                        +
+                    </button>
+                    <button 
+                        onClick={() => handleItemRemove(item.id)}
+                        className={styles.removeBtn}
+                    >
+                        Remove
+                    </button>
+                </div>
+            </div>
+        ))
+    ) : (
+        <p>Your cart is empty.</p>
+    )}
+</div>
+
                         <div className={styles.cartTotal}>
-                            <p>Total Items: {cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)}</p>
-                            <p>Total Amount: ${totalAmount.toFixed(2)}</p>
+                        <p>Total Items: {(cartItems || []).reduce((sum, item) => sum + (item.quantity || 1), 0)}</p>
+                        <p>Total Amount: ${totalAmount ? totalAmount.toFixed(2) : '0.00'}</p>
                         </div>
-                        {cartItems.length > 0 && (
+                        {cartItems?.length > 0 && (
                             <button 
                                 className={styles.checkoutBtn}
                                 onClick={() => alert('Proceeding to checkout...')}

@@ -20,9 +20,11 @@ const SignIn = () => {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Login successful', data);
+                localStorage.setItem('token', data.token);
                 localStorage.setItem('userType', 'user');
                 localStorage.setItem('email', email);
-                Router.push('/');
+
+                Router.replace('/');
             } else {
                 console.error('Login failed');
             }

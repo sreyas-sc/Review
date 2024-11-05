@@ -21,6 +21,8 @@ export const getAllPerfumes = async () => {
 export const addToCart = async (cartItems = [], perfume) => {
   console.log("Cart: ", cartItems);
 
+  const token = localStorage.getItem('token');
+
   const existingItem = cartItems.find(item => item._id);
   let updatedCart;
   if (existingItem) {
@@ -33,7 +35,15 @@ export const addToCart = async (cartItems = [], perfume) => {
 
   try {
     console.log("Updated Cart: ", updatedCart);
-    const res = await axios.post(`http://localhost:5000/cart`, { items: updatedCart });
+    const res = await axios.post(`http://localhost:5000/cart`, 
+      { items: updatedCart },
+      {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    }
+    );
     if (res.status !== 200) {
       console.log("Failed to update cart");
       return cartItems;

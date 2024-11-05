@@ -1,6 +1,9 @@
 import User from "../models/user-model.js";
 
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = "USERSECRETKEY";
 
 // User signup
 export const signup = async (req, res) => {
@@ -35,8 +38,7 @@ export const signup = async (req, res) => {
 // User login
 export const login = async (req, res) => {
     const { email, password } = req.body;
-    console.log("login!!!!!!!!!!!!!!!!");
-    console.log(req.body);
+
 
     try {
         const existingUser = await User.findOne({ email });
@@ -49,7 +51,13 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        res.status(200).json({ message: 'Login successful', user: existingUser });
+        const token = jwt.sign({ id: existingUser._id }, JWT_SECRET, { expiresIn: "7d" });
+
+        res.status(200).json({
+            message: "Login successful",
+            userId: existingUser._id,
+            token
+        });
     } catch (error) {
         res.status(500).json({ message: 'Something went wrong', error });
     }

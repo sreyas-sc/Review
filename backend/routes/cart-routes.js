@@ -1,9 +1,11 @@
 import express from 'express';
 import { addToCartController } from '../controllers/cart-controller.js';
+import {verifyUserToken} from '../middlewares/auth.js';
 
 const cartRouter = express.Router();
 
-cartRouter.post('/cart', addToCartController);
+
+cartRouter.post('/cart', verifyUserToken, addToCartController);
 
 
 

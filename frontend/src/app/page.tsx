@@ -21,10 +21,17 @@ interface CartItem {
     quantity: number;
 }
 
+interface CartResponse {
+    items: CartItem[];
+    totalCartPrice: number;
+    discountMessage: string;
+}
+
 const Page = () => {
     const [perfumes, setPerfumes] = useState<Perfume[]>([]);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [totalAmount, setTotalAmount] = useState(0);
+    const [discountMessage, setDiscountMessage] = useState('');
 
     const getStoredCartItems = (): CartItem[] => {
         if (typeof window === 'undefined') return [];
@@ -49,6 +56,37 @@ const Page = () => {
         }
     };
 
+    // const handleItemAdd = async (perfume: Perfume) => {
+    //     const existingCartItems = getStoredCartItems();
+    //     const existingItem = existingCartItems.find(item => item.id === perfume._id);
+        
+    //     let updatedCartItems: CartItem[];
+    //     if (existingItem) {
+    //         updatedCartItems = existingCartItems.map(item =>
+    //             item.id === perfume._id
+    //                 ? { ...item, quantity: (item.quantity || 1) + 1 }
+    //                 : item
+    //         );
+    //     } else {
+    //         updatedCartItems = [...existingCartItems, {
+    //             id: perfume._id,
+    //             code: perfume.code,
+    //             name: perfume.name,
+    //             price: perfume.price,
+    //             quantity: 1
+    //         }];
+    //     }
+        
+    //     setStoredCartItems(updatedCartItems);
+    //     setCartItems(updatedCartItems);
+    //     updateTotals(updatedCartItems);
+    
+    //     const cartItem = updatedCartItems.find(item => item.id === perfume._id);
+    //     if (cartItem) {
+    //         await addToCart(updatedCartItems);
+    //     }
+    // };
+
     const handleItemAdd = async (perfume: Perfume) => {
         const existingCartItems = getStoredCartItems();
         const existingItem = existingCartItems.find(item => item.id === perfume._id);
@@ -72,11 +110,14 @@ const Page = () => {
         
         setStoredCartItems(updatedCartItems);
         setCartItems(updatedCartItems);
-        updateTotals(updatedCartItems);
-    
-        const cartItem = updatedCartItems.find(item => item.id === perfume._id);
-        if (cartItem) {
-            await addToCart(updatedCartItems);
+        
+        try {
+            const cartResponse: CartResponse = await addToCart(updatedCartItems);
+            setCartItems(cartResponse.items);
+            setTotalAmount(cartResponse.totalCartPrice);
+            setDiscountMessage(cartResponse.discountMessage);
+        } catch (error) {
+            console.error("Error updating cart:", error);
         }
     };
 

@@ -4,6 +4,7 @@ import cors from 'cors';
 
 import userRouter from "./routes/user-routes.js";
 import perfumeRouter from "./routes/perfume-routes.js";
+import cartRouter from "./routes/cart-routes.js";
 
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 // Middleware setup
 app.use("/user", userRouter);
 app.use("/perfume", perfumeRouter);
+app.use("/cart", cartRouter);
 
 
 mongoose.connect(
@@ -27,3 +29,4 @@ mongoose.connect(
         )
     )
     .catch(e => console.log(e));
+

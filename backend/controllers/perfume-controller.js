@@ -31,7 +31,7 @@ export const getAllPerfume = async (_req, res) => {
     console.log("get all perfume!!!!!!!!!!!!!!!!");
     try {
         const perfumes = await Perfume.find();
-        console.log(perfumes);
+        // console.log(perfumes);
         res.status(200).json({ perfumes });
     } catch (error) {
         res.status(500).json({ message: 'Something went wrong', error });

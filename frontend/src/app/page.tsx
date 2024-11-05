@@ -3,25 +3,63 @@ import React, { useEffect, useState } from 'react';
 import styles from './page.module.css';
 import { getAllPerfumes } from './api-helpers/api-helpers';
 
+interface Perfume {
+    _id: string;
+    name: string;
+    price: number;
+    image: string;
+    description: string;
+    brand: string;
+}
+
+interface CartItem {
+    id: string;
+    name: string;
+    price: number;
+    quantity: number;
+}
+
 const Page = () => {
     const [perfumes, setPerfumes] = useState([]);
     const [cartItems, setCartItems] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
 
-    const handleItemAdd = (perfume) => {
-        const existingCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const getStoredCartItems = (): CartItem[] => {
+        if (typeof window === 'undefined') return [];
+        
+        try {
+            const items = localStorage.getItem('cartItems');
+            if (!items) return [];
+            return JSON.parse(items);
+        } catch (error) {
+            console.error('Error reading from localStorage:', error);
+            return [];
+        }
+    };
+
+    // Safe localStorage setter with error handling
+    const setStoredCartItems = (items: CartItem[]) => {
+        if (typeof window === 'undefined') return;
+        
+        try {
+            localStorage.setItem('cartItems', JSON.stringify(items));
+        } catch (error) {
+            console.error('Error writing to localStorage:', error);
+        }
+    };
+
+    const handleItemAdd = (perfume: Perfume) => {
+        const existingCartItems = getStoredCartItems();
         const existingItem = existingCartItems.find(item => item.id === perfume._id);
         
-        let updatedCartItems;
+        let updatedCartItems: CartItem[];
         if (existingItem) {
-            // If item exists, increment quantity
             updatedCartItems = existingCartItems.map(item =>
                 item.id === perfume._id
                     ? { ...item, quantity: (item.quantity || 1) + 1 }
                     : item
             );
         } else {
-            // If item doesn't exist, add it with quantity 1
             updatedCartItems = [...existingCartItems, {
                 id: perfume._id,
                 name: perfume.name,
@@ -30,22 +68,22 @@ const Page = () => {
             }];
         }
         
-        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+        setStoredCartItems(updatedCartItems);
         setCartItems(updatedCartItems);
         updateTotals(updatedCartItems);
     };
 
-    const handleItemRemove = (itemId) => {
-        const existingCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const handleItemRemove = (itemId: string) => {
+        const existingCartItems = getStoredCartItems();
         const updatedCartItems = existingCartItems.filter(item => item.id !== itemId);
         
-        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+        setStoredCartItems(updatedCartItems);
         setCartItems(updatedCartItems);
         updateTotals(updatedCartItems);
     };
 
-    const handleQuantityChange = (itemId, change) => {
-        const existingCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const handleQuantityChange = (itemId: string, change: number) => {
+        const existingCartItems = getStoredCartItems();
         const updatedCartItems = existingCartItems.map(item => {
             if (item.id === itemId) {
                 const newQuantity = Math.max(1, (item.quantity || 1) + change);
@@ -54,12 +92,12 @@ const Page = () => {
             return item;
         });
         
-        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+        setStoredCartItems(updatedCartItems);
         setCartItems(updatedCartItems);
         updateTotals(updatedCartItems);
     };
 
-    const updateTotals = (items) => {
+    const updateTotals = (items: CartItem[]) => {
         const total = items.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
         setTotalAmount(total);
     };
@@ -71,10 +109,7 @@ const Page = () => {
         };
         fetchPerfumes();
 
-        // Load cart items from localStorage
-        const storedCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-        setCartItems(storedCartItems);
-        updateTotals(storedCartItems);
+
     }, []);
 
     return (

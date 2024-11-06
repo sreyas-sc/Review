@@ -2,7 +2,7 @@ import axios from 'axios';
 export const getAllPerfumes = async () => {
     // console.log("get all perfume!!!!!!!!!!!!!!!! from helpers");
     try {
-      const res = await axios.get(`http://localhost:5000/perfume`);
+      const res = await axios.get(`https://review-38wx.onrender.com/perfume`);
   
       if (res.status !== 200) {
         console.log("No Data");

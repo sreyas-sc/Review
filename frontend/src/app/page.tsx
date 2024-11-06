@@ -269,7 +269,7 @@ const Page = () => {
                             <div className={styles.resultsCount}>Showing {perfumes.length} results</div>
                             <div className={styles.sortBy}></div>
                                 <span>Sorted by : <b>Popularity</b>
-                                    <img className={styles.mt50} src="../img/down-arrow.svg" alt="" />
+                                    <img className={styles.mt50} src="/assets/img/down-arrow.svg" alt="" />
                                 </span>
                             </div>
                         </div>
@@ -282,8 +282,10 @@ const Page = () => {
                                             <img src={perfume.image} alt="Product" className={styles.productImage} />
                                         </div>
                                         <div className={styles.heartWrapper}>
+                                        <img src="/assets/img/heart.svg" alt="Heart" className={styles.heartimage} />
                                         </div>
                                         <div className={styles.badgeWrapper}>
+                                            <img src="/assets/img/badge.svg" alt="Heart" className={styles.badgewrapper} />
                                         </div>
                                         <button className={styles.buyButton} onClick={() => handleItemAdd(perfume)}>Add to Cart</button>
                                         {/* </a> */}

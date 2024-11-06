@@ -97,7 +97,7 @@ export const addToCartController = (req, res) => {
     
     let discountMessage = [];
 
-    // Apply cart-wide discounts
+    // Apply cart-wide discounts(15% for 6 unique perfumes, 10% for 5 unique perfumes)
     if (uniquePerfumes.size >= 6) {
         totalCartPrice *= 0.85; 
         console.log('15% off applied for purchasing all 6 different perfumes');

@@ -19,6 +19,7 @@ interface CartItem {
     name: string;
     price: number;
     quantity: number;
+    message?: string;
 }
 
 interface CartResponse {
@@ -28,17 +29,22 @@ interface CartResponse {
 }
 
 const Page = () => {
+    // State variables for perfumes, cart items, total amount and discount message.
     const [perfumes, setPerfumes] = useState<Perfume[]>([]);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [totalAmount, setTotalAmount] = useState(0);
     const [discountMessage, setDiscountMessage] = useState('');
 
+    //  Retrieves the stored cart items from the local storage.(An array of cart items.)
+     
     const getStoredCartItems = (): CartItem[] => {
         if (typeof window === 'undefined') return [];
         
         try {
+            // Retrieve the cart items from the local storage.
             const items = localStorage.getItem('cartItems');
             if (!items) return [];
+            // Parse the JSON string and return the cart items.
             return JSON.parse(items);
         } catch (error) {
             console.error('Error reading from localStorage:', error);
@@ -46,6 +52,7 @@ const Page = () => {
         }
     };
 
+    // Stores the cart items in the local storage.
     const setStoredCartItems = (items: CartItem[]) => {
         if (typeof window === 'undefined') return;
         
@@ -56,49 +63,26 @@ const Page = () => {
         }
     };
 
-    // const handleItemAdd = async (perfume: Perfume) => {
-    //     const existingCartItems = getStoredCartItems();
-    //     const existingItem = existingCartItems.find(item => item.id === perfume._id);
-        
-    //     let updatedCartItems: CartItem[];
-    //     if (existingItem) {
-    //         updatedCartItems = existingCartItems.map(item =>
-    //             item.id === perfume._id
-    //                 ? { ...item, quantity: (item.quantity || 1) + 1 }
-    //                 : item
-    //         );
-    //     } else {
-    //         updatedCartItems = [...existingCartItems, {
-    //             id: perfume._id,
-    //             code: perfume.code,
-    //             name: perfume.name,
-    //             price: perfume.price,
-    //             quantity: 1
-    //         }];
-    //     }
-        
-    //     setStoredCartItems(updatedCartItems);
-    //     setCartItems(updatedCartItems);
-    //     updateTotals(updatedCartItems);
-    
-    //     const cartItem = updatedCartItems.find(item => item.id === perfume._id);
-    //     if (cartItem) {
-    //         await addToCart(updatedCartItems);
-    //     }
-    // };
-
+    // Adds an item to the cart.
     const handleItemAdd = async (perfume: Perfume) => {
+        // Retrieve the cart items from the local storage.
         const existingCartItems = getStoredCartItems();
+        // Check if the item already exists in the cart.
         const existingItem = existingCartItems.find(item => item.id === perfume._id);
-        
+
+        //If the item already exists in the cart, update the quantity.
         let updatedCartItems: CartItem[];
+        // If the item exists in the cart, update the quantity.
         if (existingItem) {
             updatedCartItems = existingCartItems.map(item =>
+                // If the item is the one being added, update the quantity.
                 item.id === perfume._id
-                    ? { ...item, quantity: (item.quantity || 1) + 1 }
+                    ? { ...item, quantity: (item.quantity || 1)  }
                     : item
             );
+            // If the item does not exist in the cart, add it to the cart.
         } else {
+            // Add the new item to the existing cart items.
             updatedCartItems = [...existingCartItems, {
                 id: perfume._id,
                 code: perfume.code,
@@ -108,11 +92,15 @@ const Page = () => {
             }];
         }
         
+        // Update the cart items in the local storage
         setStoredCartItems(updatedCartItems);
+        // Update the cart items in the state.
         setCartItems(updatedCartItems);
         
+        // Update the total amount based on the updated cart items.
         try {
             const cartResponse: CartResponse = await addToCart(updatedCartItems);
+            // Update the total amount and discount message based on the cart response.
             setCartItems(cartResponse.items);
             setTotalAmount(cartResponse.totalCartPrice);
             setDiscountMessage(cartResponse.discountMessage);
@@ -121,35 +109,48 @@ const Page = () => {
         }
     };
 
+    // Removes an item from the cart.
     const handleItemRemove = (itemId: string) => {
+        // Retrieve the cart items from the local storage.
         const existingCartItems = getStoredCartItems();
+        // Filter out the item to be removed.
         const updatedCartItems = existingCartItems.filter(item => item.id !== itemId);
         
+        // Update the cart items in the local storage and state.
         setStoredCartItems(updatedCartItems);
         setCartItems(updatedCartItems);
         updateTotals(updatedCartItems);
     };
 
+    // Updates the quantity of a cart item.
     const handleQuantityChange = (itemId: string, change: number) => {
+        // Retrieve the cart items from the local storage.
         const existingCartItems = getStoredCartItems();
+        // Update the quantity of the item.
         const updatedCartItems = existingCartItems.map(item => {
             if (item.id === itemId) {
+                // Ensure the quantity is at least 1.
                 const newQuantity = Math.max(1, (item.quantity || 1) + change);
+                // const newQuantity =  (item.quantity || 1) + change;
                 return { ...item, quantity: newQuantity };
             }
             return item;
         });
         
+        // Update the cart items in the local storage and state.
         setStoredCartItems(updatedCartItems);
         setCartItems(updatedCartItems);
         updateTotals(updatedCartItems);
     };
 
+    // Updates the total amount based on the cart items.
     const updateTotals = (items: CartItem[]) => {
+        // Calculate the total amount based on the cart items.
         const total = items.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
         setTotalAmount(total);
     };
 
+    // Fetches all perfumes from the API and sets the state.
     useEffect(() => {
         const fetchPerfumes = async () => {
             const data = await getAllPerfumes();
@@ -186,18 +187,19 @@ const Page = () => {
                 </div>
 
                 <div className={styles.icons}>
-                    <div className={`${styles.icon} ${styles.wishlist}`}>
-                        <span><img src="../assets/icons/Vector.png" alt="" /></span>
-                        <a href="../cart/cart.html"></a>
-                        <div className={`${styles.icon} ${styles.cart}`}>
-                            <span><img src="../assets/icons/Cart1.png" alt="" /></span>
-                            
+                        <div className={`${styles.icon} ${styles.wishlist}`}>
+                            <span><img src="/assets/icons/Vector.png" alt="" /></span>
                         </div>
+
+                        <div className={`${styles.icon} ${styles.cart}`}>
+                            <span><img src="/assets/icons/Cart1.png" alt="" /></span>
+                        </div>
+
                         <div className={`${styles.icon} ${styles.profile}`}>
                             <span><img src="/assets/icons/person.png" alt="" /></span>
                         </div>
                     </div>
-                </div>
+                {/* </div> */}
             </nav>
 
             <div className={styles.mainContentWrapper}>
@@ -207,70 +209,101 @@ const Page = () => {
                     </div>
                 </div>
 
+
                 <div className={styles.collections}>
                     <div className={styles.collectionLeft}>
-                    </div>
+                        <div className={styles.cartSummary}>
+                            <h2>Cart Summary</h2>
+                            <div className={styles.cartItems}>
+                                {cartItems && cartItems.length > 0 ? (
+                                    cartItems.map((item) => (
+                                        <div key={item.id} className={styles.cartItem}>
+                                            <div className={styles.itemInfo}>
+                                                <span>{item.name} x {item.quantity}</span>
+                                                <span>${(item.price * (item.quantity || 1)).toFixed(2)}</span>
+                                            </div>
+                                            <div className={styles.itemControls}>
+                                                <button 
+                                                    onClick={() => handleQuantityChange(item.id, -1)}
+                                                    className={styles.quantityBtn}
+                                                >
+                                                    -
+                                                </button>
+                                                <span>{item.quantity || 1}</span>
+                                                <button 
+                                                    onClick={() => {
+                                                        handleQuantityChange(item.id, 1);
+                                                        const perfume = perfumes.find(p => p._id === item.id);
+                                                        if (perfume) handleItemAdd(perfume);
+                                                    }}
+                                                    className={styles.quantityBtn}
+                                                >
+                                                    +
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleItemRemove(item.id)}
+                                                    className={styles.removeBtn}
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>Your cart is empty.</p>
+                                )}
+                            </div>
 
-                    <div className={styles.cartSummary}>
-                        <h2>Cart Summary</h2>
-                        <div className={styles.cartItems}>
-    {cartItems && cartItems.length > 0 ? (
-        cartItems.map((item) => (
-            <div key={item.id} className={styles.cartItem}>
-                <div className={styles.itemInfo}>
-                    <span>{item.name} x {item.quantity}</span>
-                    <span>${(item.price * (item.quantity || 1)).toFixed(2)}</span>
-                </div>
-                <div className={styles.itemControls}>
-                    <button 
-                        onClick={() => handleQuantityChange(item.id, -1)}
-                        className={styles.quantityBtn}
-                    >
-                        -
-                    </button>
-                    <span>{item.quantity || 1}</span>
-                    <button 
-                        onClick={() => handleQuantityChange(item.id, 1)}
-                        className={styles.quantityBtn}
-                    >
-                        +
-                    </button>
-                    <button 
-                        onClick={() => handleItemRemove(item.id)}
-                        className={styles.removeBtn}
-                    >
-                        Remove
-                    </button>
-                </div>
-            </div>
-        ))
-    ) : (
-        <p>Your cart is empty.</p>
-    )}
-</div>
-
-                        <div className={styles.cartTotal}>
-                        <p>Total Items: {(cartItems || []).reduce((sum, item) => sum + (item.quantity || 1), 0)}</p>
-                        <p>Total Amount: ${totalAmount ? totalAmount.toFixed(2) : '0.00'}</p>
+                            <div className={styles.cartTotal}>
+                            <p>Total Items: {(cartItems || []).reduce((sum, item) => sum + (item.quantity || 1), 0)}</p>
+                            <p>Total Amount: ${totalAmount ? totalAmount.toFixed(2) : '0.00'}</p>
+                            </div>
+                            {cartItems?.length > 0 && (
+                                <button 
+                                    className={styles.checkoutBtn}
+                                    onClick={() => alert('Proceeding to checkout...')}
+                                >
+                                    Proceed to Checkout
+                                </button>
+                            )}
                         </div>
-                        {cartItems?.length > 0 && (
-                            <button 
-                                className={styles.checkoutBtn}
-                                onClick={() => alert('Proceeding to checkout...')}
-                            >
-                                Proceed to Checkout
-                            </button>
+                    <div>
+                        {(discountMessage || cartItems.some(item => item.message)) && (
+                            <div className={styles.offersContainer}>
+                                <h3 className={styles.offersTitle}>Special Offers</h3>
+                                <div className={styles.offersList}>
+                                    {/* Individual Item Offers */}
+                                    {cartItems.map((item, index) => (
+                                        item.message && item.message !== 'Item added to cart' && (
+                                            <div key={`${item.id}-${index}`} className={styles.offerItem}>
+                                                <span className={styles.offerIcon}>🏷️</span>
+                                                {item.message}
+                                            </div>
+                                        )
+                                    ))}
+                                    
+                                    {/* Cart-wide Offers */}
+                                    {discountMessage && discountMessage.split('. ').map((offer, index) => (
+                                        <div key={`cart-offer-${index}`} className={styles.offerItem}>
+                                            <span className={styles.offerIcon}>🛍️</span>
+                                            {offer}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         )}
+                        </div>
                     </div>
                 </div>
                     <div className={styles.collectionRight}>
                         <div className={styles.ourCollections}>Our Collections</div>
                         <div className={styles.resultsInfo}>
                             <div className={styles.resultsCount}>Showing {perfumes.length} results</div>
-                            <div className={styles.sortBy}></div>
-                                <span>Sorted by : <b>Popularity</b>
-                                    <img className={styles.mt50} src="/assets/img/down-arrow.svg" alt="" />
-                                </span>
+                                <div className={styles.sortBy}>
+                                    <span>Sorted by : <b>Popularity</b>
+                                        <img className={styles.mt50} src="/assets/img/down-arrow.svg" alt="" />
+                                    </span>
+                                </div>
                             </div>
                         </div>
 

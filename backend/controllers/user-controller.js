@@ -37,22 +37,27 @@ export const signup = async (req, res) => {
 
 // User login
 export const login = async (req, res) => {
+    
     const { email, password } = req.body;
 
-
+    
     try {
+        // Check if user exists
         const existingUser = await User.findOne({ email });
         if (!existingUser) {
             return res.status(404).json({ message: 'User does not exist' });
         }
 
+        // Check if password is correct
         const isPasswordCorrect = bcrypt.compare(password, existingUser.password);
         if (!isPasswordCorrect) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
+        // Create token
         const token = jwt.sign({ id: existingUser._id }, JWT_SECRET, { expiresIn: "7d" });
 
+        // Send response
         res.status(200).json({
             message: "Login successful",
             userId: existingUser._id,

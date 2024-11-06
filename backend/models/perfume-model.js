@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+// Create a schema for the perfume
 const perfumeSchema = new Schema({
     code:{
         type:String,

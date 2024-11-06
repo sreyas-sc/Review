@@ -4,11 +4,14 @@ import styles from './signin.module.css';
 import Router from 'next/router';
 
 const SignIn = () => {
+    // State variables for email and password
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    // Function to handle login
     const handleLogin = async () => {
         try {
+            // Fetch request to login
             const response = await fetch('http://localhost:5000/user/login', {
                 method: 'POST',
                 headers: {
@@ -17,6 +20,7 @@ const SignIn = () => {
                 body: JSON.stringify({ email, password }),
             });
 
+            // If response is ok, set token, userType and email in local storage and redirect to home page
             if (response.ok) {
                 const data = await response.json();
                 console.log('Login successful', data);

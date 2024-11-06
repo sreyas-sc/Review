@@ -14,6 +14,10 @@
   padding-right: 50px;
 }
 
+.offerItem{
+  color: #4CAF50;
+}
+
 .col4 {
   flex: 1;
   display: flex;
@@ -60,6 +64,7 @@
 
 .searchIcons {
   display: flex;
+  flex-direction: row;
   align-items: center;
 }
 
@@ -71,6 +76,13 @@
 .icons img {
   width: 24px;
   margin-left: 5px;
+}
+
+.wishlist {
+  position: relative;
+  /* background-color: aqua; */
+  display: flex;
+  flex-direction: row;
 }
 
 .exploreBlock {
@@ -270,18 +282,29 @@
 }
 
 .collections {
+  /* background-color: #0056b3; */
   width: 100%;
   display: flex;
+  /* flex-direction: row; */
+  /* justify-content: space-around; */
   gap: 20px;
   margin-top: 50px;
 }
 
 .collectionLeft {
-  width: 25%;
+  width: 100%;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  /* align-items: center; */
+  justify-content: space-between;
+  /* background-color: #666; */
+  /* background-color: #ff4444; */
 }
 
 .collectionRight {
   width: 75%;
+  /* background-color: aqua; */
 }
 
 .leftBox {
@@ -362,11 +385,11 @@
   flex-direction: column;
   min-width: 300px;
   background-color: white;
-  
-  border: 1px solid #000000; 
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
   border-radius: 8px; 
   overflow: hidden; 
-  margin-top: 16px; 
+  margin-top: 36px; 
+  margin-bottom: 16px;
   width: 33%;
 }
 
@@ -408,6 +431,8 @@
   background-color: #ffffff; /* Button background color */
   color: #000; /* Button text color */
   border: 1px solid #848484;
+  margin-right: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
   padding: 8px 16px; /* Padding for button */
   border-radius: 50px; /* Rounded corners for button */
   cursor: pointer; /* Pointer on hover */
@@ -418,8 +443,11 @@
   height: 40px;
 }
 
+
+
 .cartItems {
   margin: 15px 0;
+  /* background-color: #666; */
 }
 
 .cartItem {
@@ -606,8 +634,8 @@
 .heartWrapper {
   position: absolute;
   z-index: 1;
-  right: 12px;
-  top: 12px;
+  right: 22px;
+  top: 20px;
 }
 
 .badgeWrapper {
